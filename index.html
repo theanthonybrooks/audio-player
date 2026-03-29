@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Audio Player</title>
     <style>
-      @import url("https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap");
+      @import url("https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap");
 
       * {
         margin: 0;
@@ -14,175 +14,150 @@
       }
 
       :root {
-        --bg: #0e0e10;
-        --surface: #1a1a1f;
-        --border: #2a2a30;
-        --text: #e8e6e3;
-        --text-dim: #87858c;
-        --accent: #f06449;
-        --accent-glow: rgba(240, 100, 73, 0.25);
-        --progress-bg: #2a2a30;
-        --radius: 10px;
-      }
-
-      .theme-light {
-        --bg: #f5f4f1;
+        --bg: transparent;
         --surface: #ffffff;
-        --border: #e0ddd8;
-        --text: #1a1a1f;
-        --text-dim: #7a7770;
-        --accent: #d94f3a;
-        --accent-glow: rgba(217, 79, 58, 0.15);
-        --progress-bg: #e0ddd8;
+        --border: #e4e0db;
+        --text: #2c2a27;
+        --text-dim: #8a8580;
+        --accent: #2c2a27;
+        --accent-hover: #4a4843;
+        --radius: 40px;
       }
 
       body {
         font-family: "DM Sans", sans-serif;
         background: var(--bg);
         color: var(--text);
-        min-height: 100vh;
         display: flex;
         align-items: center;
         justify-content: center;
-        padding: 16px;
+        min-height: 100vh;
+        padding: 12px;
       }
 
       .player {
-        width: 100%;
-        max-width: 520px;
+        display: flex;
+        align-items: center;
+        gap: 14px;
         background: var(--surface);
         border: 1px solid var(--border);
         border-radius: var(--radius);
-        padding: 20px 24px;
-        display: flex;
-        flex-direction: column;
-        gap: 14px;
-        transition: box-shadow 0.3s;
+        padding: 8px 20px 8px 8px;
+        transition:
+          box-shadow 0.3s,
+          border-color 0.3s;
+        max-width: 280px;
+        width: 100%;
       }
       .player:hover {
-        box-shadow:
-          0 0 0 1px var(--border),
-          0 8px 30px rgba(0, 0, 0, 0.25);
+        border-color: #ccc8c2;
+        box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
       }
 
-      .player-top {
-        display: flex;
-        align-items: center;
-        gap: 16px;
-      }
-
-      .artwork {
-        width: 56px;
-        height: 56px;
-        border-radius: 6px;
-        overflow: hidden;
-        flex-shrink: 0;
-        background: var(--border);
-      }
-      .artwork img {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-        display: block;
-      }
-
-      .meta {
-        flex: 1;
-        min-width: 0;
-      }
-      .meta .title {
-        font-weight: 500;
-        font-size: 15px;
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-      }
-      .meta .artist {
-        font-size: 13px;
-        color: var(--text-dim);
-        margin-top: 2px;
-        font-weight: 300;
-      }
-
+      /* --- Play button --- */
       .play-btn {
-        width: 42px;
-        height: 42px;
+        width: 40px;
+        height: 40px;
         border-radius: 50%;
-        border: none;
-        background: var(--accent);
-        color: #fff;
+        border: 1.5px solid var(--border);
+        background: var(--surface);
+        color: var(--accent);
         cursor: pointer;
         display: grid;
         place-items: center;
         flex-shrink: 0;
         transition:
-          transform 0.15s,
-          box-shadow 0.25s;
+          background 0.2s,
+          color 0.2s,
+          border-color 0.2s;
       }
       .play-btn:hover {
-        transform: scale(1.08);
-        box-shadow: 0 0 14px var(--accent-glow);
-      }
-      .play-btn:active {
-        transform: scale(0.97);
+        background: var(--accent);
+        color: var(--surface);
+        border-color: var(--accent);
       }
       .play-btn svg {
-        width: 18px;
-        height: 18px;
+        width: 14px;
+        height: 14px;
         fill: currentColor;
       }
-
-      .progress-row {
-        display: flex;
-        align-items: center;
-        gap: 10px;
+      .play-btn .icon-play {
+        margin-left: 2px;
       }
-      .time {
-        font-size: 11px;
+
+      /* --- Label --- */
+      .label {
+        font-size: 13px;
+        font-weight: 400;
         color: var(--text-dim);
-        font-variant-numeric: tabular-nums;
-        min-width: 36px;
-        letter-spacing: 0.02em;
-      }
-      .time.end {
-        text-align: right;
-      }
-
-      .progress-bar {
-        flex: 1;
-        height: 5px;
-        background: var(--progress-bg);
-        border-radius: 3px;
-        position: relative;
-        cursor: pointer;
+        letter-spacing: 0.01em;
+        white-space: nowrap;
         overflow: hidden;
-        transition: height 0.1s;
-      }
-      .progress-bar:hover {
-        height: 7px;
-      }
-      .progress-fill {
-        position: absolute;
-        left: 0;
-        top: 0;
-        bottom: 0;
-        background: var(--accent);
-        border-radius: 3px;
-        width: 0%;
-        transition: width 0.15s linear;
+        text-overflow: ellipsis;
+        user-select: none;
       }
 
-      .volume-row {
+      /* --- Subtle EQ bars animation when playing --- */
+      .eq-bars {
+        display: flex;
+        align-items: flex-end;
+        gap: 2px;
+        height: 14px;
+        margin-left: auto;
+        flex-shrink: 0;
+        opacity: 0;
+        transition: opacity 0.3s;
+      }
+      .eq-bars.active {
+        opacity: 1;
+      }
+      .eq-bars span {
+        display: block;
+        width: 2.5px;
+        background: var(--text-dim);
+        border-radius: 1px;
+        animation: eq 1s ease-in-out infinite alternate;
+      }
+      .eq-bars span:nth-child(1) {
+        height: 4px;
+        animation-delay: 0s;
+      }
+      .eq-bars span:nth-child(2) {
+        height: 8px;
+        animation-delay: 0.2s;
+      }
+      .eq-bars span:nth-child(3) {
+        height: 5px;
+        animation-delay: 0.4s;
+      }
+      .eq-bars span:nth-child(4) {
+        height: 10px;
+        animation-delay: 0.15s;
+      }
+
+      @keyframes eq {
+        0% {
+          height: 3px;
+        }
+        100% {
+          height: 14px;
+        }
+      }
+
+      /* --- Volume --- */
+      .vol-wrap {
         display: flex;
         align-items: center;
-        gap: 8px;
-        justify-content: flex-end;
+        gap: 4px;
+        margin-left: auto;
+        flex-shrink: 0;
       }
       .vol-icon {
-        width: 16px;
-        height: 16px;
+        width: 14px;
+        height: 14px;
         color: var(--text-dim);
         cursor: pointer;
+        flex-shrink: 0;
       }
       .vol-icon svg {
         width: 100%;
@@ -192,23 +167,23 @@
       .volume-slider {
         -webkit-appearance: none;
         appearance: none;
-        width: 80px;
-        height: 4px;
-        background: var(--progress-bg);
+        width: 50px;
+        height: 3px;
+        background: var(--border);
         border-radius: 2px;
         outline: none;
       }
       .volume-slider::-webkit-slider-thumb {
         -webkit-appearance: none;
-        width: 12px;
-        height: 12px;
+        width: 10px;
+        height: 10px;
         border-radius: 50%;
         background: var(--accent);
         cursor: pointer;
       }
       .volume-slider::-moz-range-thumb {
-        width: 12px;
-        height: 12px;
+        width: 10px;
+        height: 10px;
         border-radius: 50%;
         background: var(--accent);
         cursor: pointer;
@@ -216,63 +191,45 @@
       }
 
       .error-msg {
-        text-align: center;
+        font-size: 12px;
         color: var(--text-dim);
-        font-size: 13px;
-        padding: 20px;
-      }
-      .error-msg code {
-        display: block;
-        margin-top: 10px;
-        font-size: 11px;
-        color: var(--accent);
-        word-break: break-all;
+        text-align: center;
+        padding: 16px;
       }
 
-      @media (max-width: 400px) {
+      @media (max-width: 300px) {
         .player {
-          padding: 14px 16px;
+          padding: 6px 14px 6px 6px;
+          gap: 10px;
         }
-        .artwork {
-          width: 44px;
-          height: 44px;
-        }
-        .meta .title {
-          font-size: 14px;
+        .label {
+          font-size: 12px;
         }
       }
     </style>
   </head>
   <body>
     <div class="player" id="player">
-      <div class="player-top">
-        <div class="artwork" id="artwork" style="display: none">
-          <img id="artworkImg" src="" alt="" />
-        </div>
-        <div class="meta">
-          <div class="title" id="trackTitle">No track loaded</div>
-          <div class="artist" id="trackArtist"></div>
-        </div>
-        <button class="play-btn" id="playBtn" aria-label="Play">
-          <svg id="iconPlay" viewBox="0 0 24 24">
-            <polygon points="6,3 20,12 6,21" />
-          </svg>
-          <svg id="iconPause" viewBox="0 0 24 24" style="display: none">
-            <rect x="5" y="3" width="4" height="18" />
-            <rect x="15" y="3" width="4" height="18" />
-          </svg>
-        </button>
+      <button class="play-btn" id="playBtn" aria-label="Play">
+        <svg class="icon-play" id="iconPlay" viewBox="0 0 24 24">
+          <polygon points="7,4 20,12 7,20" />
+        </svg>
+        <svg id="iconPause" viewBox="0 0 24 24" style="display: none">
+          <rect x="6" y="4" width="3.5" height="16" rx="1" />
+          <rect x="14.5" y="4" width="3.5" height="16" rx="1" />
+        </svg>
+      </button>
+
+      <span class="label" id="label">Listen</span>
+
+      <div class="eq-bars" id="eqBars">
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
       </div>
 
-      <div class="progress-row">
-        <span class="time" id="timeCurrent">0:00</span>
-        <div class="progress-bar" id="progressBar">
-          <div class="progress-fill" id="progressFill"></div>
-        </div>
-        <span class="time end" id="timeDuration">0:00</span>
-      </div>
-
-      <div class="volume-row">
+      <div class="vol-wrap">
         <div class="vol-icon" id="volIcon">
           <svg viewBox="0 0 24 24">
             <path
@@ -292,68 +249,42 @@
 
     <script>
       /*
-    ALL CONFIG VIA URL PARAMS — edit these in the iframe src:
+    URL PARAMS (set in the iframe src):
 
-    Required:
-      src     = direct URL to audio file (.wav, .mp3, .ogg, etc.)
+      src    = direct URL to audio file (.wav, .mp3, etc.)  [required]
+      label  = button label text (default: "Listen")
+      accent = hex color, URL-encoded (e.g. %232c2a27)
 
-    Optional:
-      title   = track title        (default: "Untitled")
-      artist  = artist name        (default: blank)
-      art     = album artwork URL  (default: hidden)
-      theme   = "light"            (default: dark)
-      accent  = hex color e.g. %2300ff88
-      bg      = "transparent"      (seamless embed)
-
-    SQUARESPACE CODE BLOCK EXAMPLE:
+    SQUARESPACE CODE BLOCK:
 
     <iframe
-      src="https://yoursite.com/audio-player.html?src=https://example.com/song.wav&title=My%20Song&artist=The%20Band"
-      width="100%" height="160" frameborder="0"
-      style="border:none; border-radius:10px;"
-      allow="autoplay">
+      src="https://yoursite.github.io/audio-player/?src=https://example.com/sound.wav&label=Listen"
+      width="280" height="64" frameborder="0"
+      style="border:none;" allow="autoplay">
     </iframe>
   */
 
       const params = new URLSearchParams(window.location.search)
-
-      if (params.get("theme") === "light")
-        document.body.classList.add("theme-light")
-      if (params.get("accent"))
+      if (params.get("accent")) {
         document.documentElement.style.setProperty(
           "--accent",
           decodeURIComponent(params.get("accent"))
         )
-      if (params.get("bg") === "transparent") {
-        document.documentElement.style.setProperty("--bg", "transparent")
-        document.body.style.background = "transparent"
       }
 
       const audio = new Audio()
       const playBtn = document.getElementById("playBtn")
       const iconPlay = document.getElementById("iconPlay")
       const iconPause = document.getElementById("iconPause")
-      const titleEl = document.getElementById("trackTitle")
-      const artistEl = document.getElementById("trackArtist")
-      const artworkWrap = document.getElementById("artwork")
-      const artworkImg = document.getElementById("artworkImg")
-      const progressBar = document.getElementById("progressBar")
-      const progressFill = document.getElementById("progressFill")
-      const timeCurrent = document.getElementById("timeCurrent")
-      const timeDuration = document.getElementById("timeDuration")
-      const volumeSlider = document.getElementById("volumeSlider")
+      const labelEl = document.getElementById("label")
+      const eqBars = document.getElementById("eqBars")
+      const volSlider = document.getElementById("volumeSlider")
       const volIcon = document.getElementById("volIcon")
       const playerEl = document.getElementById("player")
 
       audio.volume = 0.8
+      audio.loop = true
       audio.preload = "metadata"
-
-      function fmt(s) {
-        if (isNaN(s)) return "0:00"
-        const m = Math.floor(s / 60)
-        const sec = Math.floor(s % 60)
-        return m + ":" + (sec < 10 ? "0" : "") + sec
-      }
 
       const audioSrc =
         params.get("src") ||
@@ -361,17 +292,10 @@
 
       if (!audioSrc) {
         playerEl.innerHTML =
-          '<div class="error-msg">No audio source provided.<code>Add ?src=YOUR_AUDIO_URL to the iframe src</code></div>'
+          '<div class="error-msg">No audio source — add ?src=URL to iframe</div>'
       } else {
         audio.src = audioSrc
-        titleEl.textContent = params.get("title") || "Untitled"
-        artistEl.textContent = params.get("artist") || ""
-
-        const artUrl = params.get("art")
-        if (artUrl) {
-          artworkWrap.style.display = "block"
-          artworkImg.src = artUrl
-        }
+        labelEl.textContent = params.get("label") || "Listen"
 
         playBtn.addEventListener("click", () => {
           audio.paused ? audio.play() : audio.pause()
@@ -380,35 +304,25 @@
         audio.addEventListener("play", () => {
           iconPlay.style.display = "none"
           iconPause.style.display = "block"
+          eqBars.classList.add("active")
+          labelEl.textContent = params.get("label") || "Now playing"
         })
+
         audio.addEventListener("pause", () => {
           iconPlay.style.display = "block"
           iconPause.style.display = "none"
-        })
-        audio.addEventListener("timeupdate", () => {
-          if (!audio.duration) return
-          progressFill.style.width =
-            (audio.currentTime / audio.duration) * 100 + "%"
-          timeCurrent.textContent = fmt(audio.currentTime)
-        })
-        audio.addEventListener("loadedmetadata", () => {
-          timeDuration.textContent = fmt(audio.duration)
+          eqBars.classList.remove("active")
+          labelEl.textContent = params.get("label") || "Listen"
         })
 
-        progressBar.addEventListener("click", (e) => {
-          if (!audio.duration) return
-          const rect = progressBar.getBoundingClientRect()
-          audio.currentTime =
-            ((e.clientX - rect.left) / rect.width) * audio.duration
-        })
-
-        volumeSlider.addEventListener("input", (e) => {
+        volSlider.addEventListener("input", (e) => {
           audio.volume = parseFloat(e.target.value)
           audio.muted = false
         })
+
         volIcon.addEventListener("click", () => {
           audio.muted = !audio.muted
-          volumeSlider.value = audio.muted ? 0 : audio.volume
+          volSlider.value = audio.muted ? 0 : audio.volume
         })
       }
     </script>
