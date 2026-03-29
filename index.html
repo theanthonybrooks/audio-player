@@ -38,10 +38,12 @@
         align-items: center;
         justify-content: end;
         width: 100%;
-        gap: 16px;
         padding: 10px 0;
         position: relative;
         user-select: none;
+      }
+      .player.active:has(.track-title.active:not(:empty)) {
+        gap: 1em;
       }
 
       /* --- Text buttons --- */
@@ -105,19 +107,6 @@
         }
         100% {
           height: 12px;
-        }
-      }
-
-      /* --- Separator dot --- */
-      .dot {
-        width: 3px;
-        height: 3px;
-        border-radius: 50%;
-        background: var(--border);
-        flex-shrink: 0;
-        display: none;
-        &.active {
-          display: block;
         }
       }
 
@@ -220,32 +209,7 @@
   <body>
     <div class="player" id="player">
       <button class="text-btn" id="playBtn">Play</button>
-
-      <div class="eq-bars" id="eqBars">
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-      </div>
-
       <span class="track-title" id="trackTitle"></span>
-
-      <div class="dot"></div>
-
-      <div class="vol-wrap">
-        <button class="text-btn" id="muteBtn">Mute</button>
-        <div class="vol-popup">
-          <input
-            type="range"
-            class="vol-slider-v"
-            id="volumeSlider"
-            min="0"
-            max="1"
-            step="0.01"
-            value="0.8" />
-          <span class="vol-label" id="volLabel">80%</span>
-        </div>
-      </div>
     </div>
 
     <script>
@@ -276,12 +240,7 @@
 
       const audio = new Audio()
       const playBtn = document.getElementById("playBtn")
-      const muteBtn = document.getElementById("muteBtn")
-      const eqBars = document.getElementById("eqBars")
       const titleEl = document.getElementById("trackTitle")
-      const dotEl = document.getElementById("dot")
-      const volSlider = document.getElementById("volumeSlider")
-      const volLabel = document.getElementById("volLabel")
       const playerEl = document.getElementById("player")
 
       audio.volume = 0.8
@@ -299,7 +258,6 @@
       playBtn.textContent = playLabel
       titleEl.textContent = params.get("title") || ""
 
-      // Play / Pause
       playBtn.addEventListener("click", () => {
         audio.paused ? audio.play() : audio.pause()
       })
@@ -307,34 +265,13 @@
       audio.addEventListener("play", () => {
         playBtn.textContent = pauseLabel
         titleEl.classList.add("active")
-        dotEl.classList.add("active")
-        eqBars.classList.add("active")
+        playerEl.classList.add("active")
       })
 
       audio.addEventListener("pause", () => {
         playBtn.textContent = playLabel
         titleEl.classList.remove("active")
-        dotEl.classList.remove("active")
-        eqBars.classList.remove("active")
-      })
-
-      // Mute / Unmute
-      muteBtn.addEventListener("click", () => {
-        audio.muted = !audio.muted
-        muteBtn.textContent = audio.muted ? "Unmute" : "Mute"
-        volSlider.value = audio.muted ? 0 : audio.volume
-        volLabel.textContent = audio.muted
-          ? "0%"
-          : Math.round(audio.volume * 100) + "%"
-      })
-
-      // Volume slider
-      volSlider.addEventListener("input", (e) => {
-        const v = parseFloat(e.target.value)
-        audio.volume = v
-        audio.muted = false
-        muteBtn.textContent = v === 0 ? "Unmute" : "Mute"
-        volLabel.textContent = Math.round(v * 100) + "%"
+        playerEl.classList.remove("active")
       })
     </script>
   </body>
