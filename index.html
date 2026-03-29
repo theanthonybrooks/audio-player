@@ -67,11 +67,11 @@
         gap: 2px;
         height: 12px;
         flex-shrink: 0;
-        opacity: 0;
+        display: none;
         transition: opacity 0.3s;
       }
       .eq-bars.active {
-        opacity: 1;
+        display: block;
       }
       .eq-bars span {
         display: block;
@@ -113,10 +113,15 @@
         border-radius: 50%;
         background: var(--border);
         flex-shrink: 0;
+        display: none;
+        &.active {
+          display: block;
+        }
       }
 
       /* --- Track title (hidden until hover) --- */
       .track-title {
+        display: none;
         font-size: 11px;
         font-weight: 300;
         color: var(--text-dim);
@@ -128,6 +133,9 @@
         transition:
           max-width 0.4s ease,
           opacity 0.3s ease;
+        &.active {
+          display: block;
+        }
       }
       .player:hover .track-title {
         max-width: 200px;
@@ -269,6 +277,7 @@
       const muteBtn = document.getElementById("muteBtn")
       const eqBars = document.getElementById("eqBars")
       const titleEl = document.getElementById("trackTitle")
+      const dotEl = document.getElementById("dot")
       const volSlider = document.getElementById("volumeSlider")
       const volLabel = document.getElementById("volLabel")
       const playerEl = document.getElementById("player")
@@ -295,11 +304,15 @@
 
       audio.addEventListener("play", () => {
         playBtn.textContent = pauseLabel
+        titleEl.classList.add("active")
+        dotEl.classList.add("active")
         eqBars.classList.add("active")
       })
 
       audio.addEventListener("pause", () => {
         playBtn.textContent = playLabel
+        titleEl.classList.remove("active")
+        dotEl.classList.remove("active")
         eqBars.classList.remove("active")
       })
 
