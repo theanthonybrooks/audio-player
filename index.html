@@ -15,11 +15,9 @@
 
       :root {
         --bg: transparent;
-        --surface: #ffffff;
-        --border: #e4e0db;
         --text: #2c2a27;
         --text-dim: #8a8580;
-        --accent: #2c2a27;
+        --title-text: hsl(30 8% 20% / 0.8);
       }
 
       body {
@@ -38,10 +36,9 @@
         align-items: center;
         position: relative;
         user-select: none;
-        direction: rtl; /* icon stays right, title expands left */
+        direction: rtl;
       }
 
-      /* --- Icon button --- */
       .icon-btn {
         background: none;
         border: none;
@@ -56,7 +53,7 @@
         flex-shrink: 0;
       }
       .icon-btn:hover {
-        color: var(--accent);
+        color: var(--title-text);
       }
       .icon-btn svg {
         width: 20px;
@@ -65,6 +62,22 @@
       }
 
       .track-title {
+        direction: ltr;
+        font-size: 12px;
+        font-weight: 400;
+        color: var(--title-text);
+        letter-spacing: 0.02em;
+        white-space: nowrap;
+        overflow: hidden;
+        max-width: 0;
+        opacity: 0;
+        padding-right: 0;
+        transition:
+          max-width 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+          opacity 0.3s ease,
+          padding-right 0.3s ease;
+      }
+      .hint {
         direction: ltr;
         font-size: 12px;
         font-weight: 400;
@@ -81,7 +94,19 @@
           padding-right 0.3s ease;
       }
 
-      .player:hover .track-title.has-title {
+      .player:hover .hint {
+        max-width: 100px;
+        opacity: 1;
+        padding-right: 4px;
+      }
+      .player.active:has(.track-title.has-title):hover .hint {
+        transition: none;
+        max-width: 0;
+        opacity: 0;
+        padding-right: 0;
+      }
+
+      .player.active:hover .track-title.has-title {
         max-width: 220px;
         opacity: 1;
         padding-right: 4px;
@@ -116,6 +141,7 @@
       </button>
 
       <span class="track-title" id="trackTitle"></span>
+      <span class="hint" id="hint">Unmute</span>
     </div>
 
     <script>
@@ -148,6 +174,8 @@
       const iconOn = document.getElementById("iconOn")
       const iconOff = document.getElementById("iconOff")
       const titleEl = document.getElementById("trackTitle")
+      const hintEl = document.getElementById("hint")
+      const playerEl = document.getElementById("player")
 
       audio.volume = 0.8
       audio.loop = true
@@ -167,11 +195,15 @@
       audio.addEventListener("play", () => {
         iconOff.style.display = "none"
         iconOn.style.display = "block"
+        playerEl.classList.add("active")
+        hintEl.textContent = "Mute"
       })
 
       audio.addEventListener("pause", () => {
         iconOn.style.display = "none"
         iconOff.style.display = "block"
+        playerEl.classList.remove("active")
+        hintEl.textContent = "Unmute"
       })
     </script>
   </body>
