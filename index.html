@@ -154,9 +154,7 @@
       audio.preload = "metadata"
 
       const audioSrc = params.get("src") || "/files/Muitat_Georg Buljo.mp3"
-      const titleText =
-        params.get("title") ||
-        "title of file that's really long and will overflow"
+      const titleText = params.get("title") || ""
 
       audio.src = audioSrc
       titleEl.textContent = titleText
