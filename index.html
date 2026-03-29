@@ -20,8 +20,6 @@
         --text: #2c2a27;
         --text-dim: #8a8580;
         --accent: #2c2a27;
-        --accent-hover: #4a4843;
-        --radius: 40px;
       }
 
       body {
@@ -29,7 +27,7 @@
         background: var(--bg);
         color: var(--text);
         display: flex;
-        align-items: center;
+        align-items: flex-end;
         justify-content: center;
         min-height: 100vh;
         padding: 12px;
@@ -38,72 +36,36 @@
       .player {
         display: flex;
         align-items: center;
-        gap: 14px;
-        background: var(--surface);
-        border: 1px solid var(--border);
-        border-radius: var(--radius);
-        padding: 8px 20px 8px 8px;
-        transition:
-          box-shadow 0.3s,
-          border-color 0.3s;
-        max-width: 280px;
-        width: 100%;
-      }
-      .player:hover {
-        border-color: #ccc8c2;
-        box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
-      }
-
-      /* --- Play button --- */
-      .play-btn {
-        width: 40px;
-        height: 40px;
-        border-radius: 50%;
-        border: 1.5px solid var(--border);
-        background: var(--surface);
-        color: var(--accent);
-        cursor: pointer;
-        display: grid;
-        place-items: center;
-        flex-shrink: 0;
-        transition:
-          background 0.2s,
-          color 0.2s,
-          border-color 0.2s;
-      }
-      .play-btn:hover {
-        background: var(--accent);
-        color: var(--surface);
-        border-color: var(--accent);
-      }
-      .play-btn svg {
-        width: 14px;
-        height: 14px;
-        fill: currentColor;
-      }
-      .play-btn .icon-play {
-        margin-left: 2px;
-      }
-
-      /* --- Label --- */
-      .label {
-        font-size: 13px;
-        font-weight: 400;
-        color: var(--text-dim);
-        letter-spacing: 0.01em;
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
+        gap: 16px;
+        padding: 10px 0;
+        position: relative;
         user-select: none;
       }
 
-      /* --- Subtle EQ bars animation when playing --- */
+      /* --- Text buttons --- */
+      .text-btn {
+        background: none;
+        border: none;
+        font-family: inherit;
+        font-size: 12px;
+        font-weight: 400;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        color: var(--text-dim);
+        cursor: pointer;
+        padding: 0;
+        transition: color 0.2s;
+      }
+      .text-btn:hover {
+        color: var(--accent);
+      }
+
+      /* --- EQ bars --- */
       .eq-bars {
         display: flex;
         align-items: flex-end;
         gap: 2px;
-        height: 14px;
-        margin-left: auto;
+        height: 12px;
         flex-shrink: 0;
         opacity: 0;
         transition: opacity 0.3s;
@@ -113,67 +75,114 @@
       }
       .eq-bars span {
         display: block;
-        width: 2.5px;
+        width: 2px;
         background: var(--text-dim);
         border-radius: 1px;
         animation: eq 1s ease-in-out infinite alternate;
       }
       .eq-bars span:nth-child(1) {
-        height: 4px;
+        height: 3px;
         animation-delay: 0s;
       }
       .eq-bars span:nth-child(2) {
-        height: 8px;
+        height: 7px;
         animation-delay: 0.2s;
       }
       .eq-bars span:nth-child(3) {
-        height: 5px;
+        height: 4px;
         animation-delay: 0.4s;
       }
       .eq-bars span:nth-child(4) {
-        height: 10px;
+        height: 9px;
         animation-delay: 0.15s;
       }
 
       @keyframes eq {
         0% {
-          height: 3px;
+          height: 2px;
         }
         100% {
-          height: 14px;
+          height: 12px;
         }
       }
 
-      /* --- Volume --- */
+      /* --- Separator dot --- */
+      .dot {
+        width: 3px;
+        height: 3px;
+        border-radius: 50%;
+        background: var(--border);
+        flex-shrink: 0;
+      }
+
+      /* --- Track title (hidden until hover) --- */
+      .track-title {
+        font-size: 11px;
+        font-weight: 300;
+        color: var(--text-dim);
+        letter-spacing: 0.02em;
+        white-space: nowrap;
+        overflow: hidden;
+        max-width: 0;
+        opacity: 0;
+        transition:
+          max-width 0.4s ease,
+          opacity 0.3s ease;
+      }
+      .player:hover .track-title {
+        max-width: 200px;
+        opacity: 1;
+      }
+
+      /* --- Volume wrapper with vertical slider --- */
       .vol-wrap {
+        position: relative;
         display: flex;
         align-items: center;
-        gap: 4px;
-        margin-left: auto;
-        flex-shrink: 0;
       }
-      .vol-icon {
-        width: 14px;
-        height: 14px;
+
+      .vol-popup {
+        position: absolute;
+        bottom: calc(100% + 8px);
+        left: 50%;
+        transform: translateX(-50%);
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 6px;
+        padding: 12px 8px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 6px;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.2s;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.06);
+      }
+      .vol-wrap:hover .vol-popup {
+        opacity: 1;
+        pointer-events: auto;
+      }
+
+      .vol-label {
+        font-size: 10px;
         color: var(--text-dim);
-        cursor: pointer;
-        flex-shrink: 0;
+        letter-spacing: 0.04em;
+        font-variant-numeric: tabular-nums;
       }
-      .vol-icon svg {
-        width: 100%;
-        height: 100%;
-        fill: currentColor;
-      }
-      .volume-slider {
+
+      .vol-slider-v {
         -webkit-appearance: none;
         appearance: none;
-        width: 50px;
-        height: 3px;
+        width: 3px;
+        height: 80px;
         background: var(--border);
         border-radius: 2px;
         outline: none;
+        writing-mode: vertical-lr;
+        direction: rtl;
       }
-      .volume-slider::-webkit-slider-thumb {
+      .vol-slider-v::-webkit-slider-thumb {
         -webkit-appearance: none;
         width: 10px;
         height: 10px;
@@ -181,7 +190,7 @@
         background: var(--accent);
         cursor: pointer;
       }
-      .volume-slider::-moz-range-thumb {
+      .vol-slider-v::-moz-range-thumb {
         width: 10px;
         height: 10px;
         border-radius: 50%;
@@ -196,31 +205,11 @@
         text-align: center;
         padding: 16px;
       }
-
-      @media (max-width: 300px) {
-        .player {
-          padding: 6px 14px 6px 6px;
-          gap: 10px;
-        }
-        .label {
-          font-size: 12px;
-        }
-      }
     </style>
   </head>
   <body>
     <div class="player" id="player">
-      <button class="play-btn" id="playBtn" aria-label="Play">
-        <svg class="icon-play" id="iconPlay" viewBox="0 0 24 24">
-          <polygon points="7,4 20,12 7,20" />
-        </svg>
-        <svg id="iconPause" viewBox="0 0 24 24" style="display: none">
-          <rect x="6" y="4" width="3.5" height="16" rx="1" />
-          <rect x="14.5" y="4" width="3.5" height="16" rx="1" />
-        </svg>
-      </button>
-
-      <span class="label" id="label">Listen</span>
+      <button class="text-btn" id="playBtn">Play</button>
 
       <div class="eq-bars" id="eqBars">
         <span></span>
@@ -229,39 +218,42 @@
         <span></span>
       </div>
 
+      <span class="track-title" id="trackTitle"></span>
+
+      <div class="dot"></div>
+
       <div class="vol-wrap">
-        <div class="vol-icon" id="volIcon">
-          <svg viewBox="0 0 24 24">
-            <path
-              d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02z" />
-          </svg>
+        <button class="text-btn" id="muteBtn">Mute</button>
+        <div class="vol-popup">
+          <input
+            type="range"
+            class="vol-slider-v"
+            id="volumeSlider"
+            min="0"
+            max="1"
+            step="0.01"
+            value="0.8" />
+          <span class="vol-label" id="volLabel">80%</span>
         </div>
-        <input
-          type="range"
-          class="volume-slider"
-          id="volumeSlider"
-          min="0"
-          max="1"
-          step="0.01"
-          value="0.8" />
       </div>
     </div>
 
     <script>
       /*
-    URL PARAMS (set in the iframe src):
+    URL PARAMS:
+      src    = audio file URL (.wav, .mp3, etc.)  [required]
+      title  = track title (shown on hover)
+      label  = custom play label (default: "Play")
+      accent = hex color, URL-encoded
 
-      src    = direct URL to audio file (.wav, .mp3, etc.)  [required]
-      label  = button label text (default: "Listen")
-      accent = hex color, URL-encoded (e.g. %232c2a27)
-
-    SQUARESPACE CODE BLOCK:
-
-    <iframe
-      src="https://yoursite.github.io/audio-player/?src=https://example.com/sound.wav&label=Listen"
-      width="280" height="64" frameborder="0"
-      style="border:none;" allow="autoplay">
-    </iframe>
+    SQUARESPACE:
+    <div style="position:fixed; bottom:16px; right:16px; z-index:2147483647;">
+      <iframe
+        src="https://yoursite.github.io/audio-player/?src=https://example.com/sound.wav&title=Track%20Name"
+        width="280" height="80" frameborder="0"
+        style="border:none;" allow="autoplay">
+      </iframe>
+    </div>
   */
 
       const params = new URLSearchParams(window.location.search)
@@ -274,57 +266,61 @@
 
       const audio = new Audio()
       const playBtn = document.getElementById("playBtn")
-      const iconPlay = document.getElementById("iconPlay")
-      const iconPause = document.getElementById("iconPause")
-      const labelEl = document.getElementById("label")
+      const muteBtn = document.getElementById("muteBtn")
       const eqBars = document.getElementById("eqBars")
+      const titleEl = document.getElementById("trackTitle")
       const volSlider = document.getElementById("volumeSlider")
-      const volIcon = document.getElementById("volIcon")
+      const volLabel = document.getElementById("volLabel")
       const playerEl = document.getElementById("player")
 
       audio.volume = 0.8
       audio.loop = true
       audio.preload = "metadata"
 
+      const playLabel = params.get("label") || "Play"
+      const pauseLabel = "Pause"
+
       const audioSrc =
         params.get("src") ||
         "https://cdn.freesound.org/previews/848/848962_17814297-lq.mp3"
 
-      if (!audioSrc) {
-        playerEl.innerHTML =
-          '<div class="error-msg">No audio source — add ?src=URL to iframe</div>'
-      } else {
-        audio.src = audioSrc
-        labelEl.textContent = params.get("label") || "Listen"
+      audio.src = audioSrc
+      playBtn.textContent = playLabel
+      titleEl.textContent = params.get("title") || ""
 
-        playBtn.addEventListener("click", () => {
-          audio.paused ? audio.play() : audio.pause()
-        })
+      // Play / Pause
+      playBtn.addEventListener("click", () => {
+        audio.paused ? audio.play() : audio.pause()
+      })
 
-        audio.addEventListener("play", () => {
-          iconPlay.style.display = "none"
-          iconPause.style.display = "block"
-          eqBars.classList.add("active")
-          labelEl.textContent = params.get("label") || "Now playing"
-        })
+      audio.addEventListener("play", () => {
+        playBtn.textContent = pauseLabel
+        eqBars.classList.add("active")
+      })
 
-        audio.addEventListener("pause", () => {
-          iconPlay.style.display = "block"
-          iconPause.style.display = "none"
-          eqBars.classList.remove("active")
-          labelEl.textContent = params.get("label") || "Listen"
-        })
+      audio.addEventListener("pause", () => {
+        playBtn.textContent = playLabel
+        eqBars.classList.remove("active")
+      })
 
-        volSlider.addEventListener("input", (e) => {
-          audio.volume = parseFloat(e.target.value)
-          audio.muted = false
-        })
+      // Mute / Unmute
+      muteBtn.addEventListener("click", () => {
+        audio.muted = !audio.muted
+        muteBtn.textContent = audio.muted ? "Unmute" : "Mute"
+        volSlider.value = audio.muted ? 0 : audio.volume
+        volLabel.textContent = audio.muted
+          ? "0%"
+          : Math.round(audio.volume * 100) + "%"
+      })
 
-        volIcon.addEventListener("click", () => {
-          audio.muted = !audio.muted
-          volSlider.value = audio.muted ? 0 : audio.volume
-        })
-      }
+      // Volume slider
+      volSlider.addEventListener("input", (e) => {
+        const v = parseFloat(e.target.value)
+        audio.volume = v
+        audio.muted = false
+        muteBtn.textContent = v === 0 ? "Unmute" : "Mute"
+        volLabel.textContent = Math.round(v * 100) + "%"
+      })
     </script>
   </body>
 </html>
