@@ -28,7 +28,7 @@
         color: var(--text);
         display: flex;
         align-items: flex-end;
-        justify-content: center;
+        justify-content: flex-end;
         min-height: 100vh;
         padding: 12px;
       }
@@ -36,83 +36,37 @@
       .player {
         display: flex;
         align-items: center;
-        justify-content: end;
-        width: 100%;
-        padding: 10px 0;
         position: relative;
         user-select: none;
-      }
-      .player.active:has(.track-title.active:not(:empty)) {
-        gap: 1em;
+        direction: rtl; /* icon stays right, title expands left */
       }
 
-      /* --- Text buttons --- */
-      .text-btn {
+      /* --- Icon button --- */
+      .icon-btn {
         background: none;
         border: none;
-        font-family: inherit;
-        font-size: 12px;
-        font-weight: 400;
-        letter-spacing: 0.06em;
-        text-transform: uppercase;
-        color: var(--text-dim);
         cursor: pointer;
-        padding: 0;
+        padding: 6px;
+        display: grid;
+        place-items: center;
+        color: var(--text-dim);
         transition: color 0.2s;
+        position: relative;
+        z-index: 2;
+        flex-shrink: 0;
       }
-      .text-btn:hover {
+      .icon-btn:hover {
         color: var(--accent);
       }
-
-      /* --- EQ bars --- */
-      .eq-bars {
-        display: flex;
-        align-items: flex-end;
-        gap: 2px;
-        height: 12px;
-        flex-shrink: 0;
-        display: none;
-        transition: opacity 0.3s;
-      }
-      .eq-bars.active {
-        display: block;
-      }
-      .eq-bars span {
-        display: block;
-        width: 2px;
-        background: var(--text-dim);
-        border-radius: 1px;
-        animation: eq 1s ease-in-out infinite alternate;
-      }
-      .eq-bars span:nth-child(1) {
-        height: 3px;
-        animation-delay: 0s;
-      }
-      .eq-bars span:nth-child(2) {
-        height: 7px;
-        animation-delay: 0.2s;
-      }
-      .eq-bars span:nth-child(3) {
-        height: 4px;
-        animation-delay: 0.4s;
-      }
-      .eq-bars span:nth-child(4) {
-        height: 9px;
-        animation-delay: 0.15s;
+      .icon-btn svg {
+        width: 20px;
+        height: 20px;
+        fill: currentColor;
       }
 
-      @keyframes eq {
-        0% {
-          height: 2px;
-        }
-        100% {
-          height: 12px;
-        }
-      }
-
-      /* --- Track title (hidden until hover) --- */
+      /* --- Track title slides out to the left --- */
       .track-title {
-        display: none;
+        direction: ltr;
         font-size: 11px;
         font-weight: 300;
         color: var(--text-dim);
@@ -121,94 +75,35 @@
         overflow: hidden;
         max-width: 0;
         opacity: 0;
+        padding-right: 0;
         transition:
-          max-width 0.4s ease,
-          opacity 0.3s ease;
-        &.active {
-          display: block;
-        }
+          max-width 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+          opacity 0.3s ease,
+          padding-right 0.3s ease;
       }
-      .player:hover .track-title {
-        max-width: 200px;
+
+      .player:hover .track-title.has-title {
+        max-width: 220px;
         opacity: 1;
-      }
-
-      /* --- Volume wrapper with vertical slider --- */
-      .vol-wrap {
-        position: relative;
-        display: flex;
-        align-items: center;
-      }
-
-      .vol-popup {
-        position: absolute;
-        bottom: calc(100% + 8px);
-        left: 50%;
-        transform: translateX(-50%);
-        background: var(--surface);
-        border: 1px solid var(--border);
-        border-radius: 6px;
-        padding: 12px 8px;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        gap: 6px;
-        opacity: 0;
-        pointer-events: none;
-        transition: opacity 0.2s;
-        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.06);
-      }
-      .vol-wrap:hover .vol-popup {
-        opacity: 1;
-        pointer-events: auto;
-      }
-
-      .vol-label {
-        font-size: 10px;
-        color: var(--text-dim);
-        letter-spacing: 0.04em;
-        font-variant-numeric: tabular-nums;
-      }
-
-      .vol-slider-v {
-        -webkit-appearance: none;
-        appearance: none;
-        width: 3px;
-        height: 80px;
-        background: var(--border);
-        border-radius: 2px;
-        outline: none;
-        writing-mode: vertical-lr;
-        direction: rtl;
-      }
-      .vol-slider-v::-webkit-slider-thumb {
-        -webkit-appearance: none;
-        width: 10px;
-        height: 10px;
-        border-radius: 50%;
-        background: var(--accent);
-        cursor: pointer;
-      }
-      .vol-slider-v::-moz-range-thumb {
-        width: 10px;
-        height: 10px;
-        border-radius: 50%;
-        background: var(--accent);
-        cursor: pointer;
-        border: none;
-      }
-
-      .error-msg {
-        font-size: 12px;
-        color: var(--text-dim);
-        text-align: center;
-        padding: 16px;
+        padding-right: 10px;
       }
     </style>
   </head>
   <body>
     <div class="player" id="player">
-      <button class="text-btn" id="playBtn">Play</button>
+      <button class="icon-btn" id="playBtn" aria-label="Play">
+        <!-- Sound off (muted / not playing) -->
+        <svg id="iconOff" viewBox="0 0 24 24">
+          <path
+            d="M16.5 12c0-1.77-1.02-3.29-2.5-4.03v2.21l2.45 2.45c.03-.2.05-.41.05-.63zm2.5 0c0 .94-.2 1.82-.54 2.64l1.51 1.51C20.63 14.91 21 13.5 21 12c0-4.28-2.99-7.86-7-8.77v2.06c2.89.86 5 3.54 5 6.71zM4.27 3L3 4.27 7.73 9H3v6h4l5 5v-6.73l4.25 4.25c-.67.52-1.42.93-2.25 1.18v2.06c1.38-.31 2.63-.95 3.69-1.81L19.73 21 21 19.73l-9-9L4.27 3zM12 4L9.91 6.09 12 8.18V4z" />
+        </svg>
+        <!-- Sound on (playing) -->
+        <svg id="iconOn" viewBox="0 0 24 24" style="display: none">
+          <path
+            d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z" />
+        </svg>
+      </button>
+
       <span class="track-title" id="trackTitle"></span>
     </div>
 
@@ -216,8 +111,7 @@
       /*
     URL PARAMS:
       src    = audio file URL (.wav, .mp3, etc.)  [required]
-      title  = track title (shown on hover)
-      label  = custom play label (default: "Play")
+      title  = track title (shown on hover, slides left)
       accent = hex color, URL-encoded
 
     SQUARESPACE:
@@ -240,38 +134,33 @@
 
       const audio = new Audio()
       const playBtn = document.getElementById("playBtn")
+      const iconOn = document.getElementById("iconOn")
+      const iconOff = document.getElementById("iconOff")
       const titleEl = document.getElementById("trackTitle")
-      const playerEl = document.getElementById("player")
 
       audio.volume = 0.8
       audio.loop = true
       audio.preload = "metadata"
 
-      const playLabel = params.get("label") || "Play"
-      const pauseLabel = "Pause"
-
-      const audioSrc =
-        params.get("src") ||
-        "https://cdn.freesound.org/previews/848/848962_17814297-lq.mp3"
+      const audioSrc = params.get("src") || "/files/Muitat_Georg Buljo.mp3"
+      const titleText = params.get("title") || "title of file"
 
       audio.src = audioSrc
-      playBtn.textContent = playLabel
-      titleEl.textContent = params.get("title") || ""
+      titleEl.textContent = titleText
+      if (titleText) titleEl.classList.add("has-title")
 
       playBtn.addEventListener("click", () => {
         audio.paused ? audio.play() : audio.pause()
       })
 
       audio.addEventListener("play", () => {
-        playBtn.textContent = pauseLabel
-        titleEl.classList.add("active")
-        playerEl.classList.add("active")
+        iconOff.style.display = "none"
+        iconOn.style.display = "block"
       })
 
       audio.addEventListener("pause", () => {
-        playBtn.textContent = playLabel
-        titleEl.classList.remove("active")
-        playerEl.classList.remove("active")
+        iconOn.style.display = "none"
+        iconOff.style.display = "block"
       })
     </script>
   </body>
